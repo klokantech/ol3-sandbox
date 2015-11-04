@@ -1,17 +1,27 @@
 
 var map = new ol.Map({
-  layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM(),
-      opacity: 0.5
-    })
-  ],
+  layers: [],
   target: 'map',
   view: new ol.View({
     center: [0, 0],
     zoom: 0
   })
 });
+
+var osmCheckbox = document.getElementById('osmCheckbox');
+if (osmCheckbox) {
+  var osmLayer = new ol.layer.Tile({
+                   source: new ol.source.OSM(),
+                   opacity: 0.2
+                 })
+  osmCheckbox.onchange = function(e) {
+    if (osmCheckbox.checked) {
+      map.getLayers().insertAt(0, osmLayer);
+    } else {
+      map.removeLayer(osmLayer);
+    }
+  };
+}
 
 function generateColor(str) {
   var rgb = [0, 0, 0];

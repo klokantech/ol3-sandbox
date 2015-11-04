@@ -10,12 +10,15 @@
     #layerList div.hidden {opacity:0.3;}
     #layerList div div {width:15px;height:15px;display:inline-block;}
     #propertyList {position:absolute;top:50%;bottom:0;right:0;width:190px;overflow:auto;color:#fff;}
+    #osmCheckbox {position:absolute;bottom:10px;left:10px;}
+    #osmCheckboxLabel {position:absolute;bottom:10px;left:30px;text-shadow:#fff 0 0 8px;}
   </style>
 </head>
 <body>
 <div id="map"></div>
 <div id="layerList"></div>
 <div id="propertyList"></div>
+<input type="checkbox" id="osmCheckbox" /><label id="osmCheckboxLabel" for="osmCheckbox">Show OSM</label>
 <script src="vector.js"></script>
 <script>
 
