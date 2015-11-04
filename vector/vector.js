@@ -23,6 +23,31 @@ if (osmCheckbox) {
   };
 }
 
+var setCenterFromLayer = true;
+var tileJsonUrl = 'http://tileserver.maptiler.com/zurich.json';
+function parseHash() {
+  var hash = window.location.hash.substr(1);
+  if (hash) {
+    parts = hash.split('|');
+    if (parts.length > 0 && parts[0].length > 0) {
+      tileJsonUrl = parts[0] || tileJsonUrl;
+    }
+    if (parts.length > 3) {
+      map.getView().setCenter(ol.proj.fromLonLat(
+        [parseFloat(parts[2]), parseFloat(parts[1])]
+      ));
+      map.getView().setZoom(parseInt(parts[3]));
+      setCenterFromLayer = false;
+    }
+  }
+}
+parseHash();
+
+map.on('postrender', function(e) {
+  var lonLat = ol.proj.toLonLat(map.getView().getCenter());
+  window.location.hash = tileJsonUrl + '|' + lonLat[1] + '|' + lonLat[0] + '|' + map.getView().getZoom();
+});
+
 function generateColor(str) {
   var rgb = [0, 0, 0];
   for (var i = 0; i < str.length; i++) {
@@ -99,13 +124,15 @@ function initLayer(data) {
 
   tileUrlFunction = layer.getSource().getTileUrlFunction();
 
-  var center = data['center'];
-  if (typeof center == 'string') {
-    center = center.split(',');
+  if (setCenterFromLayer) {
+    var center = data['center'];
+    if (typeof center == 'string') {
+      center = center.split(',');
+    }
+    map.getView().setCenter(ol.proj.fromLonLat(
+      [parseFloat(center[0]), parseFloat(center[1])]));
+    map.getView().setZoom(parseInt(center[2], 10));
   }
-  map.getView().setCenter(ol.proj.fromLonLat(
-    [parseFloat(center[0]), parseFloat(center[1])]));
-  map.getView().setZoom(parseInt(center[2], 10));
 
   map.addLayer(layer);
 
@@ -114,9 +141,8 @@ function initLayer(data) {
 
 
 function loadJson(callback) {
-  var url = window.location.hash.substr(1) || 'http://tileserver.maptiler.com/zurich.json'
   //var script = document.createElement('script');
-  //script.src = url + '?callback=initLayer'
+  //script.src = tileJsonUrl + '?callback=initLayer'
   //document.getElementsByTagName('head')[0].appendChild(script);
 
   var xhttp = new XMLHttpRequest();
@@ -126,6 +152,6 @@ function loadJson(callback) {
     }
   };
   xhttp.responseType = 'json';
-  xhttp.open("GET", url, true);
+  xhttp.open("GET", tileJsonUrl, true);
   xhttp.send();
 }
