@@ -28,6 +28,7 @@ var tileJsonUrl = 'http://tileserver.maptiler.com/zurich.json';
 function parseHash() {
   var hash = window.location.hash.substr(1);
   if (hash) {
+    hash = hash.replace(/%7C/g, '|');
     parts = hash.split('|');
     if (parts.length > 0 && parts[0].length > 0) {
       tileJsonUrl = parts[0] || tileJsonUrl;
