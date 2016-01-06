@@ -24,7 +24,7 @@ if (osmCheckbox) {
 }
 
 var setCenterFromLayer = true;
-var tileJsonUrl = 'http://tileserver.maptiler.com/zurich.json';
+var tileJsonUrl = 'http://osm2vectortiles.tileserver.com/v1.json';
 function parseHash() {
   var hash = window.location.hash.substr(1);
   if (hash) {
